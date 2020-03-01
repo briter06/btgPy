@@ -16,6 +16,8 @@ Creating a CHAID Tree
 ---------------
 ``` python
 from btgPy import btgLab
+import numpy as np
+import pandas as pd
 
 ## create the data
 ndarr = np.array(([1, 2, 3] * 5) + ([2, 2, 3] * 5)).reshape(10, 3)
