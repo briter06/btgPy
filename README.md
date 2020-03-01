@@ -75,15 +75,9 @@ tree = lab.chaid(indep_variables,'d',alpha_merge,max_depth,min_parent_node_size,
 ├── ([1], {1: 5, 2: 0}, <Invalid Chaid Split>)
 └── ([2], {1: 0, 2: 5}, <Invalid Chaid Split>)
 ```
-Csv file must have this structure:
+Csv (demo.csv) file must have this structure: (types,titles,values)
 
 ``` python
-
-types
-titles
-values
-
-demo.csv
 
 nominal,nominal,nominal,nominal
 a,b,c,d
