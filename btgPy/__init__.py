@@ -1,3 +1,3 @@
 from .btgLab import btgLab
 from . import CHAID
-__version__ = "1.0"
+__version__ = "1.4"
