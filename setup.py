@@ -1,12 +1,33 @@
+import re
+from os import path
 from setuptools import setup, find_packages
 
+def get_version():
+    """
+    Read version from __init__.py
+    """
+    version_regex = re.compile(
+        '__version__\\s*=\\s*(?P<q>[\'"])(?P<version>\\d+(\\.\\d+)*(-(alpha|beta|rc)(\\.\\d+)?)?)(?P=q)'
+    )
+    here = path.abspath(path.dirname(__file__))
+    init_location = path.join(here, "btgPy/__init__.py")
 
+    with open(init_location) as init_file:
+        for line in init_file:
+            match = version_regex.search(line)
+
+    if not match:
+        raise Exception(
+            "Couldn't read version information from '{0}'".format(init_location)
+        )
+
+    return match.group('version')
 
 setup(
-    name='CHAID',
+    name='btgPy',
     version=get_version(),
-    description='A CHAID tree building algorithm',
-    long_description="This package provides a python implementation of the Chi-Squared Automatic Inference Detection (CHAID) decision tree",
+    description='Data science tools',
+    long_description="This package provides tools for data science",
     url='https://github.com/bgonzalezd/btgPy',
     author='Briter Gonzalez',
     author_email='btg.developers@gmail.com',

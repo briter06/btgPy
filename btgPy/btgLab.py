@@ -1,4 +1,4 @@
-from btgCHAID import Tree
+from btgPy.btgCHAID import Tree
 import csv
 import copy
 import os
@@ -58,9 +58,9 @@ class btgLab:
                 
                             
             if render:
-                if not os.path.exists('Arboles'):
-                    os.makedirs('Arboles')
-                resp = "Arboles/res"+res
+                if not os.path.exists('CHAID_tree_images'):
+                    os.makedirs('CHAID_tree_images')
+                resp = "CHAID_tree_images/res"+res
                 tree.render(path=resp, view=True)
                 os.remove(resp)
                 
@@ -81,6 +81,8 @@ class btgLab:
         full = np.append([self.titles],self.dataset,axis=0)
         full = np.append([self.types],full,axis=0)
         df = pd.DataFrame(full)
-        if not os.path.exists('Actual'):
-            os.makedirs('Actual')
-        df.to_csv ('Actual/actual_'+self.name, index = None, header=False)
+        if not os.path.exists('saved_csv'):
+            os.makedirs('saved_csv')
+        df.to_csv ('saved_csv/saved_'+self.name, index = None, header=False)
+        
+        
