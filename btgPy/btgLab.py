@@ -1,4 +1,4 @@
-from btgPy.btgCHAID import Tree
+from btgPy.CHAID import Tree
 import csv
 import copy
 import os
@@ -40,8 +40,6 @@ class btgLab:
                                    min_parent_node_size=min_parent,
                                    min_child_node_size=min_child)
         if len(tree.tree_store) !=0:
-            
-            tree.print_tree()
             res = ""
             for x in aux_variables:
                 res = res+"_"+x
@@ -63,6 +61,7 @@ class btgLab:
                 resp = "CHAID_tree_images/res"+res
                 tree.render(path=resp, view=True)
                 os.remove(resp)
+        return tree
                 
         
         
@@ -77,6 +76,11 @@ class btgLab:
             self.titles = row2
         
         self.dataset = arr
+    def readDataFrame(self,df,types):
+        self.types = types
+        self.dataset = df.values
+        self.titles = df.columns.values.tolist()
+        
     def export(self):
         full = np.append([self.titles],self.dataset,axis=0)
         full = np.append([self.types],full,axis=0)
@@ -84,5 +88,4 @@ class btgLab:
         if not os.path.exists('saved_csv'):
             os.makedirs('saved_csv')
         df.to_csv ('saved_csv/saved_'+self.name, index = None, header=False)
-        
         

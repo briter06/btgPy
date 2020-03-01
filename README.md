@@ -7,16 +7,100 @@ This package provides tools for data science
 Installation
 ------------
 
-You have to clone the repository and install via
+You can install the python package using this command line:
 ``` bash
 pip install btgPy
 ```
 
 Creating a CHAID Tree
 ---------------
+``` python
+from btgPy import btgLab
+
+## create the data
+ndarr = np.array(([1, 2, 3] * 5) + ([2, 2, 3] * 5)).reshape(10, 3)
+df = pd.DataFrame(ndarr)
+df.columns = ['a', 'b', 'c']
+arr = np.array(([1] * 5) + ([2] * 5))
+df['d'] = arr
+
+>>> df
+   a  b  c  d
+0  1  2  3  1
+1  1  2  3  1
+2  1  2  3  1
+3  1  2  3  1
+4  1  2  3  1
+5  2  2  3  2
+6  2  2  3  2
+7  2  2  3  2
+8  2  2  3  2
+9  2  2  3  2
+lab = btgLab()
+lab.readDataFrame(df,4*['nominal'])
+indep_variables = ['a','b','c']
+alpha_merge = 0.05
+max_depth = 2
+min_parent_node_size = 30
+min_child_node_size = 0
+#This will save a .csv with the dummi variables of the node
+save_dataset = True
+#This will save a file with the image of the tree
+render = True
+
+tree = lab.chaid(indep_variables,'d',alpha_merge,max_depth,min_parent_node_size,min_child_node_size,save_dataset,render)
+>>> tree.print_tree()
+([], {1: 5, 2: 5}, ('a', p=0.001565402258, score=10.0, groups=[[1], [2]]), dof=1))
+├── ([1], {1: 5, 2: 0}, <Invalid Chaid Split>)
+└── ([2], {1: 0, 2: 5}, <Invalid Chaid Split>)
+```
+You can also read the data from a csv file:
+``` python
+from btgPy import btgLab
+
+lab.read("demo.csv")
+indep_variables = ['a','b','c']
+alpha_merge = 0.05
+max_depth = 2
+min_parent_node_size = 30
+min_child_node_size = 0
+#This will save a .csv with the dummi variables of the node
+save_dataset = True
+#This will save a file with the image of the tree
+render = True
+
+tree = lab.chaid(indep_variables,'d',alpha_merge,max_depth,min_parent_node_size,min_child_node_size,save_dataset,render)
+>>> tree.print_tree()
+([], {1: 5, 2: 5}, ('a', p=0.001565402258, score=10.0, groups=[[1], [2]]), dof=1))
+├── ([1], {1: 5, 2: 0}, <Invalid Chaid Split>)
+└── ([2], {1: 0, 2: 5}, <Invalid Chaid Split>)
+```
+Csv file must have this structure:
+
+types
+titles
+values
+
+demo.csv
+
+nominal,nominal,nominal,nominal
+a,b,c,d
+1,2,3,1
+1,2,3,1
+1,2,3,1
+1,2,3,1
+1,2,3,1
+2,2,3,2
+2,2,3,2
+2,2,3,2
+2,2,3,2
+2,2,3,2
+
+This is the inner code of the CHAID Tree and how to use it:
+---------------
 
 ``` python
-from CHAID import Tree
+from btgPy.CHAID import Tree
 
 ## create the data
 ndarr = np.array(([1, 2, 3] * 5) + ([2, 2, 3] * 5)).reshape(10, 3)
@@ -86,7 +170,7 @@ Creating a Tree using Bartlett's or Levene's Significance Test for Continuous Va
 When the dependent variable is continuous, the chi-squared test does not work due to very low frequencies of values across subgroups. As a consequence, and because the F-test is very susceptible to deviations from normality, the normality of the dependent set is determined and [Bartlett's test](https://en.wikipedia.org/wiki/Bartlett%27s_test) for significance is used when the data is normally distributed (although the subgroups may not necessarily be so) or [Levene's test](https://en.wikipedia.org/wiki/Levene%27s_test) is used when the data is non-normal.
 
 ``` python
-from CHAID import Tree
+from btgPy.CHAID import Tree
 
 ## create the data
 ndarr = np.array(([1, 2, 3] * 5) + ([2, 2, 3] * 5)).reshape(10, 3)
@@ -136,7 +220,7 @@ Running from the Command Line
 You can play around with the repo by cloning and running this from the command line:
 
 ```
-python -m CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05
+python -m btgPy.CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05
 ```
 
 It calls the `print_tree()` method, which prints the tree to terminal:
@@ -175,7 +259,7 @@ Generating Splitting Rules
 Append `--rules` to the cli or call `tree.classification_rules(node)` (either pass in the node or if node is None then it will return all splitting rules)
 
 ```
-python -m CHAID tests/data/titanic.csv fare sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05 --dependent-variable-type continuous --rules
+python -m btgPy.CHAID tests/data/titanic.csv fare sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05 --dependent-variable-type continuous --rules
 ```
 
 ``` python
@@ -188,7 +272,7 @@ python -m CHAID tests/data/titanic.csv fare sex embarked --max-depth 4 --min-par
 
 Parameters
 -------
-Run `python -m CHAID -h` to see description of command line arguments
+Run `python -m btgPy.CHAID -h` to see description of command line arguments
 
 How to Read the Tree
 -------
@@ -203,7 +287,7 @@ python setup.py install && pip install ipdb
 
 Run:
 ```bash
-python -m CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05
+python -m btgPy.CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05
 ```
 
 after placing an ipdb statement on like 55 on \_\_main\_\_.py as in the example below. The parameters mean max depth two 4 levels, a minimum parent node size threshold to 2 and merge the groups if the p-value is greater than 0.05 when comparing the groups.
@@ -316,40 +400,16 @@ Which will save it to a file specified at `path` and can be instantly viewed whe
 This can also be triggered from the command line using `--export` or `--export-path`. The former causes it to be stored in a newly created `trees` folder and the latter specifies the location of the file. Both will trigger an auto-viewing of the tree. E.g:
 
 ```bash
-python -m CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05 --export
+python -m btgPy.CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05 --export
 ```
 
 ```bash
-python -m CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05 --export-path YOUR_PATH.gv
+python -m btgPy.CHAID tests/data/titanic.csv survived sex embarked --max-depth 4 --min-parent-node-size 2 --alpha-merge 0.05 --export-path YOUR_PATH.gv
 ```
 
 The output will look like:
 
 ![](https://github.com/Rambatino/CHAID/blob/master/docs/2019-04-01%2011:45:43.gv.png?raw=true "CHAID Tree")
 
-Testing
--------
-
-CHAID uses [`pytest`](https://pypi.python.org/pypi/pytest) for its unit testing. The tests can be run from the root of a checkout with:
-``` bash
-py.test
-```
-
-If you so wish to run the unit tests across multiple python versions to make sure your changes are compatible, run: [`tox`](https://github.com/tox-dev/tox) ([`detox`](https://github.com/tox-dev/detox/releases) to run in parallel). You may need to run `pip install tox tox-pyenv detox` & `brew install pyenv` beforehand.
-
-Caveats
--------
-
-* Unlike SPSS, this library doesn't modify the data internally. This means that weight variables aren't rounded as they are in SPSS.
-* Every row is valid, even if all values are NaN or undefined. This is different to SPSS where in the weighted case it will strip out all rows if all the independent variables are NaN
-
-Upcoming Features
--------
-
-* Accuracy Estimation using Machine Learning techniques on the data
-* Binning of continuous independent variables
-
-Generating the CHANGELOG.md
---------
 
 `gem install github_changelog_generator && github_changelog_generator --exclude-labels maintenance,refactor,testing`
