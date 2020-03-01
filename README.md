@@ -1,9 +1,7 @@
-<img src="https://img.shields.io/pypi/v/CHAID.svg"> <img src="https://img.shields.io/pypi/pyversions/pytest.svg"> <img src="https://circleci.com/gh/Rambatino/CHAID.png?style=shield&circle-token=031aab51ad1dea4a698d02f02288887f06c1a9ef"> <a href="https://codecov.io/gh/Rambatino/CHAID"><img src="https://codecov.io/gh/Rambatino/CHAID/branch/master/graph/badge.svg" alt="Codecov" /></a>
-
-Chi-Squared Automatic Inference Detection
+BTG DATA SCIENCE LAB
 =========================================
 
-This package provides a python implementation of the [Chi-Squared Automatic Inference Detection (CHAID) decision tree](https://en.wikipedia.org/wiki/CHAID). It is a modification of the original implementation by Rambation, this is the original code:https://github.com/Rambatino/CHAID
+This package provides tools for data science
 
 
 Installation
@@ -11,10 +9,8 @@ Installation
 
 You have to clone the repository and install via
 ``` bash
-pip install -e path/to/your/checkout
+pip install btgPy
 ```
-
-N.B. although we've made some attempt at supporting python 2.7 see [here](https://github.com/Rambatino/CHAID/pull/103), we don't encourage the use of it as it's reached it's [End Of Life (EOL)](https://www.python.org/doc/sunset-python-2).
 
 Creating a CHAID Tree
 ---------------
