@@ -31,7 +31,7 @@ setup(
     url='https://github.com/bgonzalezd/btgPy',
     author='Briter Gonzalez',
     author_email='btg.developers@gmail.com',
-    license='Apache License 2.0',
+    license='MIT License',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
