@@ -9,7 +9,7 @@ Installation
 
 You have to clone the repository and install via
 ``` bash
-pip install --index-url https://test.pypi.org/simple/ --no-deps btgPy
+pip install btgPy
 ```
 
 Creating a CHAID Tree
