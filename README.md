@@ -77,6 +77,8 @@ tree = lab.chaid(indep_variables,'d',alpha_merge,max_depth,min_parent_node_size,
 ```
 Csv file must have this structure:
 
+``` python
+
 types
 titles
 values
@@ -95,7 +97,7 @@ a,b,c,d
 2,2,3,2
 2,2,3,2
 2,2,3,2
-
+```
 This is the inner code of the CHAID Tree and how to use it:
 ---------------
 
