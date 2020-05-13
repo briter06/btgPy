@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import pickle
 class Layer:
     
     def __init__(self,n=0,n_neurons=1, function=None):

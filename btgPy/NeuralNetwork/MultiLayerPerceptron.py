@@ -3,6 +3,7 @@ from sklearn.preprocessing import normalize
 from btgPy.NeuralNetwork.Activations import Activations
 from btgPy.NeuralNetwork.Losses import Losses
 import numpy as np
+import pickle
 
 class MultiLayerPerceptron:
     
@@ -108,4 +109,10 @@ class MultiLayerPerceptron:
             normed_matrix = normalize(weights_before, axis=1, norm='l1')
             err = np.dot(err,normed_matrix)
             
-              
+    def export(self):
+        txt = pickle.dumps(self)
+        return txt
+        
+    def load(self,obj):
+        temp_ob = pickle.loads(obj)
+        return temp_ob

@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 class Losses:
     
     #Derivative by the obtained
