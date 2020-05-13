@@ -111,8 +111,11 @@ class MultiLayerPerceptron:
             
     def export(self):
         txt = pickle.dumps(self)
-        return txt
+        return txt.hex()
         
     def load(self,obj):
-        temp_ob = pickle.loads(obj)
+        temp_ob = pickle.loads(bytes.fromhex(obj))
         return temp_ob
+    
+    def normalize(data,axis=0,norm="l1"):
+        return normalize(np.copy(data), axis=axis, norm=norm)
