@@ -13,7 +13,7 @@ class btgLab:
         self.dataset = []
         self.name = ""
 
-    def chaid(self,indep_variables,dep_variable,merge,depth,min_parent,min_child,save_dataset,render):
+    def chaid(self,indep_variables,dep_variable,merge=0.05,split_threshold=0.5,depth=1,min_parent=100,min_child=50,save_dataset=False,render=False):
         aux_variables = copy.copy(indep_variables)
         data = []
         columnas = []
@@ -38,7 +38,9 @@ class btgLab:
                                    alpha_merge=merge,
                                    max_depth=depth,
                                    min_parent_node_size=min_parent,
-                                   min_child_node_size=min_child)
+                                   min_child_node_size=min_child,
+                                   split_threshold=split_threshold)
+        
         if len(tree.tree_store) !=0:
             res = ""
             for x in aux_variables:
@@ -46,6 +48,7 @@ class btgLab:
             if save_dataset:
                 if len(tree.tree_store) != 1:
                     partes = tree.predict_separated(data,columnas,res)
+                    
                     p_datos = partes[0]
                     p_titulos = partes[1]
                     self.titles = self.titles + p_titulos
@@ -67,8 +70,8 @@ class btgLab:
         
     def read(self,file):
         self.name = file
-        arr = np.loadtxt(open(file, "rb"), delimiter=",", skiprows=2)
-        with open(file, encoding='utf-8-sig') as csvfile:
+        arr = np.loadtxt(file, delimiter=",", skiprows=2)
+        with open(file, encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             row = next(reader)
             self.types = row
@@ -76,7 +79,8 @@ class btgLab:
             self.titles = row2
         
         self.dataset = arr
-    def readDataFrame(self,df,types):
+    def readDataFrame(self,df,types,name):
+        self.name = name+".csv"
         self.types = types
         self.dataset = df.values
         self.titles = df.columns.values.tolist()

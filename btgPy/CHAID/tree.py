@@ -326,15 +326,18 @@ class Tree(object):
                 if len(z.children)==0:
                     hojas.append(z.node_id)
                     titles.append(ti+"_"+str(z.node_id))
+        
         for x in range(np.size(dataset, axis=0)):
+            
             node_id = 0
             node = self.get_node(node_id)
             while len(node.children)!=0:
+                #print(len(node.children))
                 var = node.split.split_name
                 ind = titulos.index(var)
                 val = dataset[x][ind]
+                #print(val)
 
-                fin = len(node.children)
                 auxi = 0
                 for i in node.children:
                     nde = self.get_node(i)
@@ -344,12 +347,14 @@ class Tree(object):
                             node = nde
                             break
                     elif auxi == len(node.children)-1:
-                        if val >= nde.choices[0]:
+                        prev_n = self.get_node(i-1)
+                        if val > prev_n.choices[len(prev_n.choices)-1]:
                             node_id = nde.node_id
                             node = nde
                             break
                     else:
-                        if val >= nde.choices[0] and val <= nde.choices[len(nde.choices)-1]:
+                        prev_n = self.get_node(i-1)
+                        if val > prev_n.choices[len(prev_n.choices)-1] and val <= nde.choices[len(nde.choices)-1]:
                             node_id = nde.node_id
                             node = nde
                             break
@@ -362,5 +367,6 @@ class Tree(object):
                 else:
                     aux.append(0)
             new_list.append(aux)
+        
         return [new_list,titles]
         

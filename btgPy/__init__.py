@@ -1,3 +1,4 @@
 from .btgLab import btgLab
 from . import CHAID
-__version__ = "1.6"
+from . import NeuralNetwork
+__version__ = "1.9"
