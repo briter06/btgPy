@@ -117,5 +117,5 @@ class MultiLayerPerceptron:
         temp_ob = pickle.loads(bytes.fromhex(obj))
         return temp_ob
     
-    def normalize(data,axis=0,norm="l1"):
+    def normalize_inputs(self,data,axis=0,norm="l1"):
         return normalize(np.copy(data), axis=axis, norm=norm)
