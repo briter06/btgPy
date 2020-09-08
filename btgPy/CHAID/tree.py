@@ -7,6 +7,7 @@ from .stats import Stats
 from .invalid_split_reason import InvalidSplitReason
 from .graph import Graph
 
+
 class Tree(object):
     def __init__(self, independent_columns, dependent_column, config={}):
         """
@@ -43,8 +44,8 @@ class Tree(object):
 
     @staticmethod
     def from_numpy(ndarr, arr, alpha_merge=0.05, max_depth=2, min_parent_node_size=30,
-                 min_child_node_size=30, split_titles=None, split_threshold=0, weights=None,
-                 variable_types=None, dep_variable_type='categorical'):
+                   min_child_node_size=30, split_titles=None, split_threshold=0, weights=None,
+                   variable_types=None, dep_variable_type='categorical'):
         """
         Create a CHAID object from numpy
 
@@ -76,13 +77,15 @@ class Tree(object):
         variable_types = variable_types or ['nominal'] * ndarr.shape[1]
         for ind, col_type in enumerate(variable_types):
             title = None
-            if split_titles is not None: title = split_titles[ind]
+            if split_titles is not None:
+                title = split_titles[ind]
             if col_type == 'ordinal':
                 col = OrdinalColumn(ndarr[:, ind], name=title)
             elif col_type == 'nominal':
                 col = NominalColumn(ndarr[:, ind], name=title)
             else:
-                raise NotImplementedError('Unknown independent variable type ' + col_type)
+                raise NotImplementedError(
+                    'Unknown independent variable type ' + col_type)
             vectorised_array.append(col)
 
         if dep_variable_type == 'categorical':
@@ -90,15 +93,17 @@ class Tree(object):
         elif dep_variable_type == 'continuous':
             observed = ContinuousColumn(arr, weights=weights)
         else:
-            raise NotImplementedError('Unknown dependent variable type ' + dep_variable_type)
-        config = { 'alpha_merge': alpha_merge, 'max_depth': max_depth, 'min_parent_node_size': min_parent_node_size,
-                   'min_child_node_size': min_child_node_size, 'split_threshold': split_threshold }
+            raise NotImplementedError(
+                'Unknown dependent variable type ' + dep_variable_type)
+        config = {'alpha_merge': alpha_merge, 'max_depth': max_depth, 'min_parent_node_size': min_parent_node_size,
+                  'min_child_node_size': min_child_node_size, 'split_threshold': split_threshold}
         return Tree(vectorised_array, observed, config)
 
     def build_tree(self):
         """ Build chaid tree """
         self._tree_store = []
-        self.node(np.arange(0, self.data_size, dtype=np.int), self.vectorised_array, self.observed)
+        self.node(np.arange(0, self.data_size, dtype=np.int),
+                  self.vectorised_array, self.observed)
 
     @property
     def tree_store(self):
@@ -149,8 +154,9 @@ class Tree(object):
         dep_values = df[d_variable].values
         weights = df[weight] if weight is not None else None
         return Tree.from_numpy(ind_values, dep_values, alpha_merge, max_depth, min_parent_node_size,
-                    min_child_node_size, list(ind_df.columns.values), split_threshold, weights,
-                    list(i_variables.values()), dep_variable_type)
+                               min_child_node_size, list(
+                                   ind_df.columns.values), split_threshold, weights,
+                               list(i_variables.values()), dep_variable_type)
 
     def node(self, rows, ind, dep, depth=0, parent=None, parent_decisions=None):
         """ internal method to create a node in the tree """
@@ -160,7 +166,7 @@ class Tree(object):
             terminal_node = Node(choices=parent_decisions, node_id=self.node_count,
                                  parent=parent, indices=rows, dep_v=dep)
             self._tree_store.append(terminal_node)
-            if parent!=None:
+            if parent != None:
                 self.get_node(parent).children.append(terminal_node.node_id)
                 terminal_node.level = self.get_node(parent).level + 1
             self.node_count += 1
@@ -173,7 +179,7 @@ class Tree(object):
                     parent=parent, split=split)
 
         self._tree_store.append(node)
-        if parent!=None:
+        if parent != None:
             self.get_node(parent).children.append(node.node_id)
             node.level = self.get_node(parent).level + 1
         parent = self.node_count
@@ -195,8 +201,9 @@ class Tree(object):
                                      parent=parent, indices=row_slice, dep_v=dep_slice)
                 terminal_node.split.invalid_reason = InvalidSplitReason.MIN_PARENT_NODE_SIZE
                 self._tree_store.append(terminal_node)
-                if parent!=None:
-                    self.get_node(parent).children.append(terminal_node.node_id)
+                if parent != None:
+                    self.get_node(parent).children.append(
+                        terminal_node.node_id)
                     terminal_node.level = self.get_node(parent).level + 1
                 self.node_count += 1
         return self._tree_store
@@ -293,7 +300,8 @@ class Tree(object):
         the model predictions to the dataset
         (TP + TN) / (TP + TN + FP + FN) == (T / (T + F))
         """
-        sub_observed = np.array([self.observed.metadata[i] for i in self.observed.arr])
+        sub_observed = np.array([self.observed.metadata[i]
+                                 for i in self.observed.arr])
         return float((self.model_predictions() == sub_observed).sum()) / self.data_size
 
     def render(self, path=None, view=False):
@@ -304,7 +312,7 @@ class Tree(object):
         for x in range(np.size(dataset, axis=0)):
             node_id = 0
             node = self.get_node(node_id)
-            while len(node.children)!=0:
+            while len(node.children) != 0:
                 var = node.split.split_name
                 ind = titulos.index(var)
                 val = dataset[x][ind]
@@ -316,49 +324,49 @@ class Tree(object):
                         break
             new_list.append([node_id])
         return new_list
-    
+
     def predict_separated(self, dataset, titulos, res):
         new_list = []
         hojas = []
         titles = []
         ti = "a_"+res
         for z in self.tree_store:
-                if len(z.children)==0:
-                    hojas.append(z.node_id)
-                    titles.append(ti+"_"+str(z.node_id))
-        
+            if len(z.children) == 0:
+                hojas.append(z.node_id)
+                titles.append(ti+"_"+str(z.node_id))
+
         for x in range(np.size(dataset, axis=0)):
-            
+
             node_id = 0
             node = self.get_node(node_id)
-            while len(node.children)!=0:
-                #print(len(node.children))
+            while len(node.children) != 0:
+                # print(len(node.children))
                 var = node.split.split_name
                 ind = titulos.index(var)
                 val = dataset[x][ind]
-                #print(val)
+                # print(val)
 
                 auxi = 0
                 for i in node.children:
                     nde = self.get_node(i)
                     if auxi == 0:
-                        if val <= nde.choices[len(nde.choices)-1]:
+                        if val <= nde.choices[len(nde.choices)-1] or val in nde.choices:
                             node_id = nde.node_id
                             node = nde
                             break
                     elif auxi == len(node.children)-1:
                         prev_n = self.get_node(i-1)
-                        if val > prev_n.choices[len(prev_n.choices)-1]:
+                        if val > prev_n.choices[len(prev_n.choices)-1] or val in nde.choices:
                             node_id = nde.node_id
                             node = nde
                             break
                     else:
                         prev_n = self.get_node(i-1)
-                        if val > prev_n.choices[len(prev_n.choices)-1] and val <= nde.choices[len(nde.choices)-1]:
+                        if val > prev_n.choices[len(prev_n.choices)-1] and val <= nde.choices[len(nde.choices)-1] or val in nde.choices:
                             node_id = nde.node_id
                             node = nde
                             break
-                        
+
                     auxi = auxi + 1
             aux = []
             for h in hojas:
@@ -367,6 +375,5 @@ class Tree(object):
                 else:
                     aux.append(0)
             new_list.append(aux)
-        
-        return [new_list,titles]
-        
+
+        return [new_list, titles]
