@@ -340,34 +340,39 @@ class Tree(object):
             node_id = 0
             node = self.get_node(node_id)
             while len(node.children) != 0:
-                # print(len(node.children))
                 var = node.split.split_name
                 ind = titulos.index(var)
                 val = dataset[x][ind]
-                # print(val)
+                if type(val) == str:
+                    for i in node.children:
+                        nde = self.get_node(i)
+                        if val in nde.choices:
+                            node_id = nde.node_id
+                            node = nde
+                            break
+                else:
+                    auxi = 0
+                    for i in node.children:
+                        nde = self.get_node(i)
+                        if auxi == 0:
+                            if val <= nde.choices[len(nde.choices)-1]:
+                                node_id = nde.node_id
+                                node = nde
+                                break
+                        elif auxi == len(node.children)-1:
+                            prev_n = self.get_node(i-1)
+                            if val > prev_n.choices[len(prev_n.choices)-1]:
+                                node_id = nde.node_id
+                                node = nde
+                                break
+                        else:
+                            prev_n = self.get_node(i-1)
+                            if val > prev_n.choices[len(prev_n.choices)-1] and val <= nde.choices[len(nde.choices)-1]:
+                                node_id = nde.node_id
+                                node = nde
+                                break
 
-                auxi = 0
-                for i in node.children:
-                    nde = self.get_node(i)
-                    if auxi == 0:
-                        if val <= nde.choices[len(nde.choices)-1] or val in nde.choices:
-                            node_id = nde.node_id
-                            node = nde
-                            break
-                    elif auxi == len(node.children)-1:
-                        prev_n = self.get_node(i-1)
-                        if val > prev_n.choices[len(prev_n.choices)-1] or val in nde.choices:
-                            node_id = nde.node_id
-                            node = nde
-                            break
-                    else:
-                        prev_n = self.get_node(i-1)
-                        if val > prev_n.choices[len(prev_n.choices)-1] and val <= nde.choices[len(nde.choices)-1] or val in nde.choices:
-                            node_id = nde.node_id
-                            node = nde
-                            break
-
-                    auxi = auxi + 1
+                        auxi = auxi + 1
             aux = []
             for h in hojas:
                 if h == node_id:
